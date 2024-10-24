@@ -50,11 +50,11 @@ You're done! Access the app at `localhost:8501` in your browser.
 ## How Do These Agents Work?
 Agents are weightless neural network state machines made up of 3 layers, an input layer, an inner state, and output state. 
 
-The input layer takes in the 28x28 pixel MNIST images, downsampled to B&W, as an an input array of 784 binary digits.
+The input layer takes in the 128x8 bits, as an an input array of 1024 binary digits .
 
 The inner state layer is a representation of how the agent 'understands' its input.
 
-The output layer is 4 binary digits representing the agent's prediction, which is converted into an integer to match the MNIST labels.
+The output layer is 2 binary digits representing the agent's prediction, which is converted into an integer to match the sentiment labels.
 
 Each of these layers are viewable on the right side of the streamlit app. Between running the agent on inputs, the agent is reset to a randomized state since identifying digits is not a continual process where the previous input should have an effect on the next input.
 
