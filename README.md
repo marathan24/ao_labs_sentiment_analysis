@@ -2,11 +2,7 @@
 # MNIST Streamlit Demo
 Maintainer: [spolisar](https://github.com/spolisar), shane@aolabs.ai
 
-A streamlit app where users can train an weightless neural network agent to identify hand-drawn digits (0-9) from the [MNIST dataset](https://en.wikipedia.org/wiki/MNIST_database).
-
-![example of MNIST digits from Wiki](misc/mnist_example_wiki.png)
-
-According to the [world leaderboard](https://paperswithcode.com/sota/image-classification-on-mnist), the highest accuracy achieved on MNIST is 99.87% by a variant of convolutional neural networkss (CNNs or cov-nets), with ~1.5M parameters trained on 60k training pairs. That accuracy is impressive but comes with the same limitations as larger pre-trained neural models (GPT is ~200B+ parameters nowawdays) that still hallucinate and can't learn around their mistakes.
+A streamlit app where users can train an weightless neural network agent to do sentiment analysis tasks.
 
 AO labs is building AI agents than can learn after training. 
 
@@ -65,9 +61,8 @@ The output layer is 4 binary digits representing the agent's prediction, which i
 Each of these layers are viewable on the right side of the streamlit app. Between running the agent on inputs, the agent is reset to a randomized state since identifying digits is not a continual process where the previous input should have an effect on the next input.
 
 ## File Structure
-- arch__MNIST.py - defines how the agent's neural architecture (how many neurons and how they're connected)
-- mnist.pkl.gz - the MNIST training data (60k training and 10k testing pairs)
-- Fonts/ - has training data constructed from existing fonts such as Arial, Times New Roman, etc.
+- arch__sentiment.py - defines how the agent's neural architecture (how many neurons and how they're connected)
+- shuffled_embeddings.json - Embeddings converted to int8 using "mixedbread-ai/mxbai-embed-large-v1" model and then converting to int8 using quantization
 
 ## Future Work
 - We may add the ability to download and upload trained agents in the future
