@@ -50,7 +50,7 @@ def encode_label(label):
 # Training function
 def train_agent():
     count = 0
-    for sample in train_data[50:100]:
+    for sample in train_data:
         binary_input = convert_embeddings_to_binary(sample['embeddings'])
         label = encode_label(sample['label'])
         # Pad the label to match arch_z size if necessary
@@ -62,16 +62,16 @@ def train_agent():
         st.session_state.agent.reset_state()
         st.session_state.agent.next_state(INPUT=binary_input, LABEL=label, print_result=False)
         # Record training history
-        st.session_state.training_history.append({
-            "text": sample['text'],
-            "label": sample['label']
-        })
+        # st.session_state.training_history.append({
+        #     "text": sample['text'],
+        #     "label": sample['label']
+        # })
 
 # Testing function
 def test_agent():
     correct = 0
     total = len(test_data)
-    for sample in test_data[50:100]:
+    for sample in test_data:
         binary_input = convert_embeddings_to_binary(sample['embeddings'])
         true_label = sample['label']
         print("--------------")
@@ -81,14 +81,14 @@ def test_agent():
         response = st.session_state.agent.story[st.session_state.agent.state-1, arch.Z__flat]
         print(response)
         predicted_label = interpret_response(response)
-        st.session_state.test_history.append({
-            "text": sample['text'],
-            "true_label": true_label,
-            "predicted_label": predicted_label
-        })
+        # st.session_state.test_history.append({
+        #     "text": sample['text'],
+        #     "true_label": true_label,
+        #     "predicted_label": predicted_label
+        # })
         if predicted_label.lower() == true_label.lower():
             correct += 1
-        print(f'Corrected samples are {correct} out of 50')
+        print(f'Corrected samples are {correct} out of {total}')
     accuracy = (correct / 50) * 100
     return accuracy
 
@@ -220,7 +220,6 @@ with left_col:
     if st.button("Start Training"):
         train_agent()
         st.success("Training completed!")
-        st.write(f"Total training samples: {len(st.session_state.training_history)}")
 
     st.divider()
     st.header("Test the Agent")
