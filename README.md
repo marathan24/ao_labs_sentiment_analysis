@@ -1,14 +1,12 @@
 ## AO Reference Design #1
-# MNIST Streamlit Demo
+# Sentiment Analysis Streamlit Demo
 Maintainer: [spolisar](https://github.com/spolisar), shane@aolabs.ai
 
 A streamlit app where users can train an weightless neural network agent to do sentiment analysis tasks.
 
 AO labs is building AI agents than can learn after training. 
 
-Modern machine learning started on MNIST, so this is our MNIST benchmark. Our agents here are made up of 784+4 trainable parameters in the form of weightless neurons (so no backprop) and you can train them on orders of magnitude less data (try 'em with 60 training inputs) to get good results (~60% accuracy on 60 samples!). More importantly, you can continuously (re)train the agent-- so if it makes a few mistakes with a particular number, draw new examples for it to learn from. You can also train the agent on standard fonts (like Times New Roman, Comic Sans, etc) in addition to MNIST training pairs.
-
-In arch__MNIST.py, you can view the agent's particular neural architecture and try your hand at how different configurations affect performance.
+In arch__sentiment.py, you can view the agent's particular neural architecture and try your hand at how different configurations affect performance.
 
 
 ## Installation & Setup
