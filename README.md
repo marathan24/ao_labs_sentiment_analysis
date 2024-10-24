@@ -56,7 +56,7 @@ The inner state layer is a representation of how the agent 'understands' its inp
 
 The output layer is 2 binary digits representing the agent's prediction, which is converted into an integer to match the sentiment labels.
 
-Each of these layers are viewable on the right side of the streamlit app. Between running the agent on inputs, the agent is reset to a randomized state since identifying digits is not a continual process where the previous input should have an effect on the next input.
+You can click on Training and Testing icon to train and test in the streamlit app.
 
 ## File Structure
 - arch__sentiment.py - defines how the agent's neural architecture (how many neurons and how they're connected)
