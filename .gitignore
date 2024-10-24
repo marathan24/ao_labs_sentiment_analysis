@@ -1,0 +1,8 @@
+__pycache__/
+
+#virtual environments
+aolabs-sentiment-analysis-env/
+.aolabs-sentiment-analysis-env/
+
+#enviroment variables and secrets
+.env
