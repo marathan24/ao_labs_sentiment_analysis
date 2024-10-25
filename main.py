@@ -50,7 +50,7 @@ def encode_label(label):
 # Training function
 def train_agent():
     count = 0
-    for sample in train_data:
+    for sample in train_data[0:500]:
         binary_input = convert_embeddings_to_binary(sample['embeddings'])
         label = encode_label(sample['label'])
         # Pad the label to match arch_z size if necessary
@@ -89,7 +89,7 @@ def test_agent():
         if predicted_label.lower() == true_label.lower():
             correct += 1
         print(f'Corrected samples are {correct} out of {total}')
-    accuracy = (correct / 50) * 100
+    accuracy = (correct / total) * 100
     return accuracy
 
 # Function to interpret agent's response
