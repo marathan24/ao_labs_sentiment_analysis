@@ -56,7 +56,6 @@ def train_agent():
     # Calculate number of complete batches
     num_batches = num_samples // batch_size
     
-    st.session_state.agent.reset_state()
     # Process each batch
     for batch_idx in range(num_batches):
         start_idx = batch_idx * batch_size
@@ -77,6 +76,7 @@ def train_agent():
         batch_labels = np.array(batch_labels)  # Shape: (8, 2)
         
         
+        st.session_state.agent.reset_state()
         st.session_state.agent.next_state_batch(
             INPUT=batch_inputs,  # Shape: (8, 128, 8)
             LABEL=batch_labels,  # Shape: (8, 2)
