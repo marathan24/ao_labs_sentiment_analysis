@@ -16,7 +16,7 @@ if "agent" not in st.session_state:
     st.session_state.agent = ao.Agent(arch, notes="Sentiment Analysis Agent")
     
     # Initialize the agent with random inputs to seed training
-    for _ in range(4):
+    for _ in range(1):
         random_input = np.random.randint(0, 2, arch.Q__flat.shape, dtype=np.int8)
         random_label = np.random.randint(0, 2, arch.Z__flat.shape, dtype=np.int8)
         st.session_state.agent.reset_state()
@@ -50,28 +50,49 @@ def encode_label(label):
 # Training function
 def train_agent():
     count = 0
-    for sample in train_data[0:500]:
-        binary_input = convert_embeddings_to_binary(sample['embeddings'])
-        label = encode_label(sample['label'])
-        # Pad the label to match arch_z size if necessary
-        count+=1
-        print("The data point is getting trained. Data Point :   ", count)
-        # if len(label) < arch.Z__flat.size:
-        #     label += [0] * (arch.Z__flat.size - len(label))
-        label = np.array(label, dtype=np.int8)
-        st.session_state.agent.reset_state()
-        st.session_state.agent.next_state(INPUT=binary_input, LABEL=label, print_result=False)
-        # Record training history
-        # st.session_state.training_history.append({
-        #     "text": sample['text'],
-        #     "label": sample['label']
-        # })
+    batch_size = 8
+    num_samples = len(train_data) - 500
+    
+    # Calculate number of complete batches
+    num_batches = num_samples // batch_size
+    
+    st.session_state.agent.reset_state()
+    # Process each batch
+    for batch_idx in range(num_batches):
+        start_idx = batch_idx * batch_size
+        end_idx = start_idx + batch_size
+        batch_samples = train_data[start_idx:end_idx]
+        
+        batch_inputs = []
+        batch_labels = []
+        
+        # Process each sample in the batch
+        for sample in batch_samples:
+            binary_input = convert_embeddings_to_binary(sample['embeddings'])
+            label = encode_label(sample['label'])
+            batch_inputs.append(binary_input)
+            batch_labels.append(label)
+        
+        batch_inputs = np.array(batch_inputs)  # Shape: (8, 128, 8)
+        batch_labels = np.array(batch_labels)  # Shape: (8, 2)
+        
+        
+        st.session_state.agent.next_state_batch(
+            INPUT=batch_inputs,  # Shape: (8, 128, 8)
+            LABEL=batch_labels,  # Shape: (8, 2)
+            print_result=False
+        )
+        
+        count += batch_size
+        print(f"Training batch {batch_idx + 1}/{num_batches}. Samples processed: {count}")
 
 # Testing function
 def test_agent():
     correct = 0
+    count = 0
     total = len(test_data)
     for sample in test_data:
+        count+=1
         binary_input = convert_embeddings_to_binary(sample['embeddings'])
         true_label = sample['label']
         print("--------------")
@@ -88,7 +109,7 @@ def test_agent():
         # })
         if predicted_label.lower() == true_label.lower():
             correct += 1
-        print(f'Corrected samples are {correct} out of {total}')
+        print(f'Corrected samples are {correct} out of {count}')
     accuracy = (correct / total) * 100
     return accuracy
 
