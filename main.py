@@ -16,7 +16,7 @@ if "agent" not in st.session_state:
     st.session_state.agent = ao.Agent(arch, notes="Sentiment Analysis Agent")
     
     # Initialize the agent with random inputs to seed training
-    for _ in range(1):
+    for _ in range(4):
         random_input = np.random.randint(0, 2, arch.Q__flat.shape, dtype=np.int8)
         random_label = np.random.randint(0, 2, arch.Z__flat.shape, dtype=np.int8)
         st.session_state.agent.reset_state()
@@ -41,9 +41,9 @@ def convert_embeddings_to_binary(embeddings):
 def encode_label(label):
     label_mapping = {
         "positive": [1, 1],
-        "negative": [0, 1],
-        "neutral": [0, 0],
-        "no_sentiment": [1, 0]
+        "negative": [0, 0],
+        "neutral": [1, 0],
+        "irrelevant": [0, 1]
     }
     return label_mapping.get(label.lower(), [0, 0])
 
@@ -56,6 +56,7 @@ def train_agent():
     # Calculate number of complete batches
     num_batches = num_samples // batch_size
     
+    st.session_state.agent.reset_state()
     # Process each batch
     for batch_idx in range(num_batches):
         start_idx = batch_idx * batch_size
@@ -76,7 +77,6 @@ def train_agent():
         batch_labels = np.array(batch_labels)  # Shape: (8, 2)
         
         
-        st.session_state.agent.reset_state()
         st.session_state.agent.next_state_batch(
             INPUT=batch_inputs,  # Shape: (8, 128, 8)
             LABEL=batch_labels,  # Shape: (8, 2)
@@ -91,17 +91,18 @@ def test_agent():
     correct = 0
     count = 0
     total = len(test_data)
+    st.session_state.agent.reset_state()
+
     for sample in test_data:
         count+=1
         binary_input = convert_embeddings_to_binary(sample['embeddings'])
         true_label = sample['label']
-        print("--------------")
+        print("-------------- True label is " , true_label)
         print(true_label)
-        st.session_state.agent.reset_state()
         st.session_state.agent.next_state(INPUT=binary_input, print_result=False)
         response = st.session_state.agent.story[st.session_state.agent.state-1, arch.Z__flat]
-        print(response)
         predicted_label = interpret_response(response)
+        print(predicted_label)
         # st.session_state.test_history.append({
         #     "text": sample['text'],
         #     "true_label": true_label,
@@ -119,9 +120,9 @@ def interpret_response(response):
     # Map binary to sentiment
     sentiment_mapping = {
         (1,1): "positive",
-        (0,1): "negative",
-        (0,0): "neutral",
-        (1,0): "no_sentiment"
+        (0,1): "irrelevant",
+        (0,0): "negative",
+        (1,0): "neutral"
     }
     response_tuple = tuple(response)
     return sentiment_mapping.get(response_tuple, "unknown")
